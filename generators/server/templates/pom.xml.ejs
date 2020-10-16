@@ -228,6 +228,16 @@ _%>
             <artifactId>cache-api</artifactId>
         </dependency>
 <%_ } _%>
+<%_ if (databaseType === 'sql') { _%>
+        <dependency>
+            <groupId>io.micronaut.data</groupId>
+            <artifactId>micronaut-data-spring</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.micronaut.data</groupId>
+            <artifactId>micronaut-data-spring-jpa</artifactId>
+        </dependency>
+<%_ } _%>
 <%_
 if (devDatabaseType === 'mysql' || prodDatabaseType === 'mysql') { _%>
         <dependency>

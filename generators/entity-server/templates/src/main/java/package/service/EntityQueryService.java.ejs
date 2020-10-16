@@ -40,6 +40,7 @@ import org.slf4j.LoggerFactory;
 import io.micronaut.data.model.Page;
 import io.micronaut.data.model.Pageable;
 import io.micronaut.transaction.annotation.ReadOnly;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
 import javax.inject.Singleton;
 import javax.transaction.Transactional;
@@ -98,11 +99,13 @@ public class <%= serviceClassName %> extends QueryService<<%= asEntity(entityCla
     public Page<<%= instanceType %>> findByCriteria(<%= criteria %> criteria, Pageable page) {
         log.debug("find by criteria : {}, page: {}", criteria, page);
         final Specification<<%= asEntity(entityClass) %>> specification = createSpecification(criteria);
+        final PageRequest springPage = PageRequest.of(page.getNumber(), page.getSize());
+        final org.springframework.data.domain.Page<<%= asEntity(entityClass) %>> springResult = <%= repository %>.findAll(specification, springPage);
+        final Page<<%= asEntity(entityClass) %>> result = Page.of(springResult.getContent(), page, springResult.getTotalElements());
     <%_ if (dto === 'mapstruct') { _%>
-        return <%= repository %>.findAll(specification, page)
-            .map(<%= entityToDtoReference %>);
+        return result.map(<%= entityToDtoReference %>);
     <%_ } else { _%>
-        return <%= repository %>.findAll(specification, page);
+        return result;
     <%_ } _%>
     }
 

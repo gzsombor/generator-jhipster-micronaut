@@ -33,6 +33,9 @@ import io.micronaut.data.annotation.Query;
 import io.micronaut.data.annotation.Repository;
 import io.micronaut.data.jpa.repository.JpaRepository;
 
+<%_ if (jpaMetamodelFiltering) { _%>
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+<%_ } _%>
 
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
@@ -86,7 +89,7 @@ import java.util.UUID;
 <%_ } _%>
 @Repository
 public abstract class <%= entityClass %>Repository implements <% if (databaseType === 'sql') { %>JpaRepository<% } %><% if (databaseType === 'mongodb') { %>MongoRepository<% } %><% if (databaseType === 'cassandra') { %>CassandraRepository<% } %><% if (databaseType === 'couchbase') { %>N1qlCouchbaseRepository<% } %><<%= asEntity(entityClass) %>, <%= primaryKeyType %>><% if (jpaMetamodelFiltering) { %>, JpaSpecificationExecutor<<%= asEntity(entityClass) %>><% } %> {
-    
+
     private final EntityManager entityManager;
 
     <%_ for (idx in relationships) {
